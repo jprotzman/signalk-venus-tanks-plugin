@@ -61,4 +61,4 @@ Each list entry must consist of a Signal K tank path of the form
 
 ## Author
 
-Paul Reeve <preeve@pdjr.eu>
+Paul Reeve \<<preeve@pdjr.eu>\>
