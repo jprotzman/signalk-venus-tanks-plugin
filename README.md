@@ -1,19 +1,30 @@
 # pdjr-skplugin-venus-tanks
 
-Inject Signal K tank data onto host dbus.
+Inject Signal K tank data onto Venus OS dbus.
 
-__pdjr-skplugin-venus-tanks__ takes tank data from Signal K and injects
-it into the host dbus in a format compatible with requirements of Venus
-OS.
-The plugin can be used to compensate for the deficiencies of Venus'
-tank data hndling and allow a Venus based display like the CCGX to render
-tank data even if it derives from an unsupported source like a multi-channel
-tank monitoring device.
+__pdjr-skplugin-venus-tanks__ is a plugin for Signal K servers running
+on Venus OS.
+
+The plugin takes tank data from Signal K and injects it into the host
+operating system's dbus making the data available for rendering in the
+Venus GUI.
+
+The plugin was designed as a work-around for Venus' broken native
+handling of multi-channel tank monitoring device like a Maretron MFP100
+or Garnet SeeLevel, but, of course, it will operate with tank data
+from any source that is available in Signal K.
 
 ## System requirements
 
-__pdjr-skplugin-venus-tanks__ has no special system requirements that
-must be met prior to installation.
+__pdjr-skplugin-venus-tanks__ will only be useful in Signal K servers
+running under Venus OS.
+
+If you require similar functionality but do not run Signal K under Venus
+or you prefer to maintain dbus tank data with a native Venus process then
+consider
+[venus-signalk-tank-service](https://github.com/preeve9534/venus-signalk-tank-service)
+an alternative application which fulfils the same role in a more general
+way.
 
 ## Installation
 
@@ -24,17 +35,30 @@ The plugin can also be obtained from the
 and installed using
 [these instructions](https://github.com/SignalK/signalk-server-node/blob/master/SERVERPLUGINS.md).
 
+Once installed the plugin will start immediately.
+
 ## Configuration
 
-__pdjr-skplugin-venus-tanks__ is confugured through the Signal K Node
-server plugin configuration interface.
+By default __pdjr-skplugin-venus-tanks__ will create and update a dbus
+service for every tank reported in Signal K.
+If you want the plugin to support just specific tanks, then you must
+configure it by explicitly specifying the Signal K tank paths that it
+should process.
+
+__pdjr-skplugin-venus-tanks__ is confugured through the Signal K plugin
+configuration interface.
 Navigate to _Server->Plugin config_ and select the _Venus tanks_ tab.
 
-The _Active_ checkbox tells the Signal K Node server whether or not to
-run the plugin: on first execution you should check this, before
-reviewing and amending the configuration options discussed below.
-Changes you make will only be saved and applied when you finally click
-the _Submit_ button.
+The plugin configuration pane consists simply of a list of Signal K tank
+paths.
+Initially this list is empty: a condition which the plugin treats as an
+invitation to create and maintain dbus entries for all tank paths
+reported in Signal K.
+If the list is not empty, then only those tanks identified in the list
+will be processed.
+Each list entry must consist of a Signal K tank path of the form
+__tanks/__*fluid-type*__.__*tank-instance*.
 
-The plugin configuration pane has two sections: a list of notification
-trigger paths and a list of notification scripts.
+## Author
+
+Paul Reeve <preeve@pdjr.eu>
