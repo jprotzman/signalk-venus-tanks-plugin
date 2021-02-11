@@ -6,24 +6,24 @@ __pdjr-skplugin-venus-tanks__ is a plugin for Signal K servers running
 on Venus OS.
 
 The plugin takes tank data from Signal K and injects it into the host
-operating system's dbus in a format compatible with the requirements of
-the Venus operating system.
+operating system's dbus making the data available for rendering in the
+Venus GUI.
 
-The plugin is designed to compensate for the deficiencies of Venus'
-tank data processing and will allow a Venus based display like CCGX to
-render tank data even if it derives from an unsupported multi-channel
-tank monitoring device like a Maretron MFP100 or Garnet SeeLevel.
+The plugin was designed as a work-around for Venus' broken native
+handling of multi-channel tank monitoring device like a Maretron MFP100
+or Garnet SeeLevel, but, of course, it will operate with tank data
+from any source that is available in Signal K.
 
 ## System requirements
 
-__pdjr-skplugin-venus-tanks__ will only operate on Signal K servers
+__pdjr-skplugin-venus-tanks__ will only be useful in Signal K servers
 running under Venus OS.
 
-If you do not run Signal K under Venus (but have Signal K available
-elsewhere on your network) or you prefer to maintain dbus tank data with
-a native Venus process then
+If you require similar functionality but do not run Signal K under Venus
+or you prefer to maintain dbus tank data with a native Venus process then
+consider
 [venus-signalk-tank-service](https://github.com/preeve9534/venus-signalk-tank-service)
-is an alternative application which fulfils the same role.
+an alternative application which fulfils the same role.
 
 ## Installation
 
@@ -40,9 +40,9 @@ Once installed the plugin will start immediately.
 
 By default __pdjr-skplugin-venus-tanks__ will create and update a dbus
 service for every tank reported in Signal K.
-If you want to report just specific tanks, then you must configure the
-plugin by explicitly specifying the Signal K tank paths that it should
-process.
+If you want the plugin to support just specific tanks, then you must
+configure it by explicitly specifying the Signal K tank paths that it
+should process.
 
 __pdjr-skplugin-venus-tanks__ is confugured through the Signal K plugin
 configuration interface.
@@ -57,3 +57,7 @@ If the list is not empty, then only those tanks identified in the list
 will be processed.
 Each list entry must consist of a Signal K tank path of the form
 __tanks/__*fluid-type*__.__*tank-instance*.
+
+## Author
+
+Paul Reeve <preeve@pdjr.eu>
