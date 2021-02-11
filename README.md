@@ -10,10 +10,9 @@ operating system's dbus in a format compatible with the requirements of
 the Venus operating system.
 
 The plugin is designed to compensate for the deficiencies of Venus'
-tank data hndling and will allow a Venus based display like CCGX to
+tank data processing and will allow a Venus based display like CCGX to
 render tank data even if it derives from an unsupported multi-channel
 tank monitoring device like a Maretron MFP100 or Garnet SeeLevel.
-
 
 ## System requirements
 
