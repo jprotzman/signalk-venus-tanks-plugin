@@ -1,4 +1,4 @@
-module exports = class SignalkTank {
+module exports = class SignalkTankService {
 
     constructor(fluidtype, tankinstance) {
         this.fluidtype = fluidtype;

@@ -16,75 +16,82 @@
  */
 
 const Log = require('./lib/signalk-liblog/Log.js');
+const SignalkTankService = require('./SignalkTankService');
 
-const PLUGIN_ID = "venus-tanks";
+const PLUGIN_ID = "pdjr-skplugin-venus-tanks";
 const PLUGIN_SCHEMA_FILE = _dirname + "/schema.json";
 const PLUGIN_UISCHEMA_FILE = __dirname + "/uischema.json";
 
 module.exports = function(app) {
-  var plugin = {};
-  var unsubscribes = [];
-  var fluidTypes = { "fuel": 0, "freshWater": 1, "wasteWater": 5 };
+    var plugin = {};
+    var unsubscribes = [];
+    var fluidTypes = { "fuel": 0, "freshWater": 1, "wasteWater": 5 };
 
-  plugin.id = PLUGIN_ID;
-  plugin.name = "Venus tank ";
-  plugin.description = "Inject Signal K tank data onto host dbus";
+    plugin.id = PLUGIN_ID;
+    plugin.name = "Venus tank ";
+    plugin.description = "Inject Signal K tank data onto host dbus";
 
-  const log = new Log(plugin.id, { ncallback: app.setPluginStatus, ecallback: app.setPluginError });
+    const log = new Log(plugin.id, { ncallback: app.setPluginStatus, ecallback: app.setPluginError });
 
-  plugin.schema = {
-    "type": "object",
-    "properties": {
-      "tanks": {
-        "type": "array",
-        "title": "",
-        "items": {
-          "title": "",
-          "type": "string"
-        },
-        "default": [
-        ]
-      }
+    plugin.schema = {
+        "type": "object",
+        "properties": {
+            "tanks": {
+                "type": "array",
+                "title": "Export these tank paths to host dbus",
+                "items": {
+                    "type": "string"
+                },
+                "default": [ ]
+            }
+        }
     }
-  }
 
-  plugin.uiSchema = { }
+    plugin.uiSchema = { }
 
-  plugin.start = function(options) {
-    # If no tank paths are specified, then recover all available paths
-    # from the server.
-    if (options.tanks.length == 0) {
-      var tanks = app.streambundle.getAvailablePaths().filter(p => p.startsWith('tanks.')).reduce((a,v) => {
-        var matches;
-        if (matches = v.match(/^(.*\..*\..*)\..*/)) a.add(matches[0]);
-        return(a);
-      }, new Set());
-      options.tanks = Array.from(tanks);
-    } 
+    plugin.start = function(options) {
+        // If no tank paths are specified, then recover all available paths
+        // from the server.
+        if (options.tanks.length == 0) {
+            var tanks = app.streambundle.getAvailablePaths().filter(p => p.startsWith('tanks.')).reduce((a,v) => {
+                var matches;
+                if (matches = v.match(/^(.*\..*\..*)\..*/)) a.add(matches[0]);
+                return(a);
+            }, new Set());
+            options.tanks = Array.from(tanks);
+        }
 
-    options.tanks.forEach(tank => {
-      var parts = tank.split(/\./);
-      if (parts.length == 3) {
-        let fluidType = (N2K_FLUID_TYPES[parts[1]])?N2K_FLUID_TYPES[parts[1]]:0;
-        let instance = parts[2];
-        # Create dbus service
-        var stream = app.streambundle.getSelfStream(tank + ".currentLevel");
-        if (stream) {
-          unsubscribes.push(stream.onValue(v => {
-            var capacity = app.getSelfPath(rule.tankpath + ".capacity.value");
-            # Update dbus service
-          }
-        }));
-      }
-    });
-  }
+        options.tanks.forEach(tank => {
+            var parts = tank.split(/\./);
+            if (parts.length == 3) {
+                let fluidType = (N2K_FLUID_TYPES[parts[1]])?N2K_FLUID_TYPES[parts[1]]:0;
+                let instance = parts[2];
+                let capacity = null;
+                let tankService = null;
+                try {
+                    tankService = new SignalkTankService(fluidType, instance);
+                    await tankService.createService();
+                    var stream = app.streambundle.getSelfStream(tank + ".currentLevel");
+                    if (stream) {
+                        unsubscribes.push(stream.onValue(currentLevel => {
+                            if (!capacity) capacity = app.getSelfPath(rule.tankpath + ".capacity.value");
+                            tankService.update(currentLevel, capacity)
+                        });
+                    }
+                } catch(e)  {
+                    Log.E("unable to create service for %s (%s)", tank, e);
+                }
+            } else {
+                Log.E("invalid tank path (%s)", tank);
+            }
+        });
+    }
 
-  plugin.stop = function() {
-    unsubscribes.forEach(f => f())
-    unsubscribes = []
-  }
+    plugin.stop = function() {
+        unsubscribes.forEach(f => f())
+        unsubscribes = []
+    }
 
-
-return(plugin);
+    return(plugin);
 
 }
