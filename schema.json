@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "properties": {
+    "tanks": {
+      "type": "array",
+      "title": "",
+      "items": {
+        "title": "",
+        "type": "string"
+      },
+      "default": [
+      ]
+    }
+  }
+}
