@@ -23,7 +23,8 @@ If you require similar functionality but do not run Signal K under Venus
 or you prefer to maintain dbus tank data with a native Venus process then
 consider
 [venus-signalk-tank-service](https://github.com/preeve9534/venus-signalk-tank-service)
-an alternative application which fulfils the same role.
+an alternative application which fulfils the same role in a more general
+way.
 
 ## Installation
 
