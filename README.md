@@ -41,6 +41,7 @@ Once installed the plugin will start immediately.
 
 By default __pdjr-skplugin-venus-tanks__ will create and update a dbus
 service for every tank reported in Signal K.
+
 If you want the plugin to support just specific tanks, then you must
 configure it by explicitly specifying the Signal K tank paths that it
 should process.
