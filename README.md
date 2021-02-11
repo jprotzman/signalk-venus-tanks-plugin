@@ -57,7 +57,7 @@ reported in Signal K.
 If the list is not empty, then only those tanks identified in the list
 will be processed.
 Each list entry must consist of a Signal K tank path of the form
-__tanks/__*fluid-type*__.__*tank-instance*.
+'tanks.*fluid-type*__.__*tank-instance*'.
 
 ## Author
 
