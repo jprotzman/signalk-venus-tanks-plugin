@@ -50,7 +50,7 @@ __pdjr-skplugin-venus-tanks__ is configured through the Signal K plugin
 configuration interface.
 Navigate to _Server->Plugin config_ and select the _Venus tanks_ tab.
 
-The plugin configuration pane consists simply of a list of Signal K
+The plugin configuration page consists simply of a list of Signal K
 tank paths.
 Initially this list is empty: a condition which the plugin treats as
 an invitation to create and maintain dbus entries for all tank paths
