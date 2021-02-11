@@ -14,17 +14,17 @@ tank data hndling and will allow a Venus based display like CCGX to
 render tank data even if it derives from an unsupported multi-channel
 tank monitoring device like a Maretron MFP100 or Garnet SeeLevel.
 
-If you do not run Signal K under Venus (but have it available elsewhere
-on your network) or you prefer to maintain dbus tank data with a native
-Venus process then
-[venus-signalk-tank-service](https://github.com/preeve9534/venus-signalk-tank-service)
-is an alternative application which will also inject tank data from
-Signal K onto the Venus dbus.
 
 ## System requirements
 
-__pdjr-skplugin-venus-tanks__ will only operate is Signal K servers
-that run on Venus OS.
+__pdjr-skplugin-venus-tanks__ will only operate on Signal K servers
+running under Venus OS.
+
+If you do not run Signal K under Venus (but have Signal K available
+elsewhere on your network) or you prefer to maintain dbus tank data with
+a native Venus process then
+[venus-signalk-tank-service](https://github.com/preeve9534/venus-signalk-tank-service)
+is an alternative application which fulfils the same role.
 
 ## Installation
 
