@@ -5,8 +5,9 @@ Inject Signal K tank data onto Venus OS dbus.
 __pdjr-skplugin-venus-tanks__ is a plugin for Signal K servers running
 on Venus OS.
 
-The plugin takes tank data from Signal K and injects it into the host
-system dbus making the data available for rendering in the Venus GUI.
+The plugin creates a dbus service for each, user nominated, Signal K
+tank and echoes Signal K tank updates to the associated dbus service,
+making the tank data available for rendering in the Venus GUI.
 
 The plugin was designed as a work-around for Venus' broken handling of
 multi-channel tank monitoring devices like the Maretron FPM100 and
@@ -15,15 +16,15 @@ data from any source.
 
 ## System requirements
 
-__pdjr-skplugin-venus-tanks__ will only be useful in Signal K servers
-running under Venus OS.
+__pdjr-skplugin-venus-tanks__ will most likely only be useful in
+Signal K servers running under Venus OS.
 
 If you require similar functionality but do not run Signal K under
 Venus or you prefer to maintain dbus tank data with a native Venus
 process, then consider
 [venus-signalk-tank-service](https://github.com/preeve9534/venus-signalk-tank-service)
-an alternative application which fulfils the same role in a more
-general way.
+an alternative Python application which fulfils the same role in a
+more general way.
 
 ## Installation
 
@@ -52,7 +53,7 @@ Navigate to _Server->Plugin config_ and select the _Venus tanks_ tab.
 The plugin configuration page consists simply of a list of Signal K
 tank paths.
 Initially this list is empty: a condition which the plugin treats as
-an invitation to create and maintain dbus entries for all tank paths
+an invitation to create and maintain dbus services for all tank paths
 reported in Signal K.
 If the list is not empty, then only those tanks identified in the list
 will be processed.
