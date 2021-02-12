@@ -62,21 +62,21 @@ The plugin configuration page consists of a list of Signal K tank
 specifications, each consisting of a *path* to a particular tank in the
 Signal K tree and an associated (multiplication) *factor* which can be
 used to adjust the capacity value reported by Signal K.
-This latter value feature is useful because individual tank sensor
-monitors are sometimes configured differently or report in non-standard
-ways: returning litres or sometimes cubic metres as the tank capacity.
+This latter feature is useful when individual tank sensor monitors are
+poorly configured or report in non-standard ways: some perhaps returning
+volume in litres, others in cubic-metres.
 Venus OS expects tank capacity to be reported in litres.
 The factor value defaults to 1.0.
 
 The tank list is initially empty: a condition which the plugin treats as
 an invitation to create and maintain dbus services for all tank paths
-reported in Signal K using a capacity factor of 1.0.
+reported in Signal K using a capacity *factor* of 1.0.
 
 If the list is not empty, then only those tanks identified in the list
 will be processed.
 Each tank *path* entry must consist of a Signal K tank path of the form
 'tanks.*fluid-type*__.__*tank-instance*' and *factor* must be a decimal
-value greater than or equal to 0.0.
+value greater than or equal to 0.0 (it defaults to 1.0).
 
 You may need to restart Signal K after making any configuration
 changes.
@@ -125,7 +125,7 @@ Remaining                                                                1.60218
 
 You can see that my port-side fuel tank is reporting capacity in
 cubic-metres: I should really adjust this to litres by setting a
-multiplication factor for this tank of 1000.0.
+multiplication *factor* for this tank of 1000.0.
 
 ### Updating the Venus GUI for multiple tank display
 
