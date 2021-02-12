@@ -133,7 +133,7 @@ If you have more than one or two tanks on your system, then you may
 wish to make some changes to the Venus GUI in order to better 
 display this data.
 
-On my system I use the GUI tweaks implemented by @kwendrem in his
+On my system I use the GUI tweaks implemented by @kwindrem in his
 [tank repeater](https://github.com/kwindrem/SeeLevel-N2K-Victron-VenusOS)
 project.
 You can get these changes by clicking the above link and following
@@ -152,7 +152,7 @@ the installation instructions bearing in mind that:
 
 ## Acknowledgements
 
-Thanks to @kwendrem for making this a whole lot easier than it might have
+Thanks to @kwindrem for making this a whole lot easier than it might have
 been by designing his repeater software in a way which allows it to be
 leveraged by others.
 
