@@ -6,13 +6,12 @@ __pdjr-skplugin-venus-tanks__ is a plugin for Signal K servers running
 on Venus OS.
 
 The plugin takes tank data from Signal K and injects it into the host
-operating system's dbus making the data available for rendering in the
-Venus GUI.
+system dbus making the data available for rendering in the Venus GUI.
 
-The plugin was designed as a work-around for Venus' broken native
-handling of multi-channel tank monitoring device like a Maretron FPM100
-or Garnet SeeLevel, but, of course, it will operate with tank data
-from any source that is available in Signal K.
+The plugin was designed as a work-around for Venus' broken handling of
+multi-channel tank monitoring devices like the Maretron FPM100 and
+Garnet SeeLevel, but, it will, of course, operate with Signal K tank
+data from any source.
 
 ## System requirements
 
