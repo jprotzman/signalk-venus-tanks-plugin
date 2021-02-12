@@ -42,7 +42,8 @@ The plugin can also be obtained from the
 and installed using
 [these instructions](https://github.com/SignalK/signalk-server-node/blob/master/SERVERPLUGINS.md).
 
-Once installed the plugin will start immediately.
+Once installed the plugin will start immediately and report its status
+in the Signal K dashboard.
 
 ## Configuration
 
@@ -54,37 +55,36 @@ adjust the tank capacity value reported by Signal K for one or more
 tanks then you must configure each tank explicitly in the following
 way.
 
-__pdjr-skplugin-venus-tanks__ is configured through the Signal K plugin
-configuration interface.
-Navigate to _Server->Plugin config_ and select the _Venus tanks_ tab.
+1. Login to your Signal K dashboard and navigate to
+   _Server->Plugin config_->_Venus tanks_.
 
-The plugin configuration page consists of a list of Signal K tank
-specifications, each consisting of a *path* to a particular tank in the
-Signal K tree and an associated (multiplication) *factor* which can be
-used to adjust the capacity value reported by Signal K.
-This latter feature is useful when individual tank sensor monitors are
-poorly configured or report in non-standard ways: some perhaps returning
-volume in litres, others in cubic-metres.
-Venus OS expects tank capacity to be reported in litres.
-The factor value defaults to 1.0.
+2. Add entries to the *Tanks* list, one for each tank you want the plugin
+   to process.
+   Each tank entry consists of *path* and *factor* settings.
 
-The tank list is initially empty: a condition which the plugin treats as
-an invitation to create and maintain dbus services for all tank paths
-reported in Signal K using a capacity *factor* of 1.0.
+   *path* specifies the Signal K tank path of the tank being configured
+   and must be of the form 'tanks.*fluid-type*__.__*tank-instance*'.
+   
+   *factor* must be a decimal value greater than or equal to 0.0 (it
+   defaults to 1.0).
+   This feature is useful when individual tank sensor monitors are
+   poorly configured or report in non-standard ways: some perhaps
+   returning volume in litres, others in cubic-metres.
+   Venus OS expects tank capacity to be reported in litres.
+   
+3. When you specified all the tanks you wish the plugin to process,
+   update the configuration.
+   
+4. Reboot Signal K.
 
-If the list is not empty, then only those tanks identified in the list
-will be processed.
-Each tank *path* entry must consist of a Signal K tank path of the form
-'tanks.*fluid-type*__.__*tank-instance*' and *factor* must be a decimal
-value greater than or equal to 0.0 (it defaults to 1.0).
+You can revert to the default of processing all tanks by restoring the
+tank list to empty.
 
-You may need to restart Signal K after making any configuration
-changes.
-
-The plugin will indicate its status in the Signal K dashboard.
+## Reviewing operation in Venus OS
 
 Once the plugin is installed, configured and working you can log into
 your Venus host and check things out.
+
 On my five-tank system, for example:
 ```
 $> dbus-spy
@@ -125,7 +125,7 @@ Remaining                                                                1.60218
 
 You can see that my port-side fuel tank is reporting capacity in
 cubic-metres: I should really adjust this to litres by setting a
-multiplication *factor* for this tank of 1000.0.
+multiplication *factor* of 1000.0 for this tank.
 
 ### Updating the Venus GUI for multiple tank display
 
