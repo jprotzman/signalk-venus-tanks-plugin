@@ -10,9 +10,9 @@ tank and echoes Signal K tank updates to the associated dbus service,
 making the tank data available for rendering in the Venus GUI.
 
 The plugin was designed as a work-around for Venus' broken handling of
-multi-channel tank monitoring devices like the Maretron FPM100 and
-Garnet SeeLevel, but, it will, of course, operate with Signal K tank
-data from any source.
+multi-channel tank monitoring devices (like the Maretron FPM100 and
+the Garnet SeeLevel), but, it will, of course, operate with Signal K
+tank data from any source.
 
 ## System requirements
 
