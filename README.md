@@ -153,8 +153,8 @@ the installation instructions bearing in mind that:
 ## Acknowledgements
 
 Thanks to @kwindrem for making this a whole lot easier than it might have
-been by designing his repeater software in a way which allows it to be
-leveraged by others.
+been by designing his repeater software in a way which allows its components
+to be leveraged by others.
 
 Thanks to @mvader at Victron for his support and encouragement and for
 inviting me to think about a Signal K plugin variant of
