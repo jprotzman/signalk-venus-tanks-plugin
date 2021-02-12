@@ -16,7 +16,7 @@ associated dbus service, making the tank data available for *inter-alia*
 rendering in the Venus GUI.
 
 The installation instructions below include guidance on how to use
-the GUI modifications implemented by @kwendrem in his
+the GUI modifications implemented by @kwindrem in his
 [tank repeater](https://github.com/kwindrem/SeeLevel-N2K-Victron-VenusOS)
 project to achieve the display shown below.
 Of course, you can also roll your own GUI for tank data rendering.
