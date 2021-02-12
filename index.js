@@ -18,7 +18,7 @@ const Log = require('./lib/signalk-liblog/Log.js');
 const SignalkTankService = require('./SignalkTankService');
 
 const PLUGIN_ID = "pdjr-skplugin-venus-tanks";
-const N2K_FLUID_TYPES = {
+const SIGNALK_FLUID_TYPES = {
     fuel: 0,
     freshWater: 1,
     greyWater: 2,
@@ -43,7 +43,7 @@ module.exports = function(app) {
     plugin.schema = {
         "type": "object",
         "properties": {
-            "tanks": {
+            "tankpaths": {
                 "type": "array",
                 "title": "Export these tank paths to host dbus",
                 "items": {
@@ -57,41 +57,45 @@ module.exports = function(app) {
     plugin.uiSchema = { }
 
     plugin.start = function(options) {
-        // If no tank paths are specified, then recover all available paths
-        // from the server.
-        if ((!options.tanks) || (options.tanks.length == 0)) {
-            var tanks = app.streambundle.getAvailablePaths().filter(p => p.startsWith('tanks.')).reduce((a,v) => {
+        // If no tank paths are specified, then recover all available
+        // paths from the server.
+        if ((!options.tankpaths) || (options.tankpaths.length == 0)) {
+            var tankpathset = app.streambundle.getAvailablePaths().filter(path => path.startsWith('tanks.')).reduce((a,p) => {
                 var matches;
-                if (matches = v.match(/^(tanks\..*\..*)\..*/)) a.add(matches[1]);
+                if (matches = p.match(/^(tanks\..*\..*)\..*/)) a.add(matches[1]);
                 return(a);
             }, new Set());
-            options.tanks = Array.from(tanks);
+            options.tankpaths = Array.from(tankpathset);
         }
 
-        console.log(JSON.stringify(options.tanks));
+        log.N("creating dbus services for %d tanks", options.tankpaths.length);
 
-        options.tanks.forEach(tank => {
-            var parts = tank.split(/\./);
+        // Iterate over recovered paths, asynchronously creating dbus
+        // tank services (see SignalkTankService()) and registering
+        // for level updates which are used to update the associated
+        // service as and when they occur. 
+        options.tankpaths.forEach(tankpath => {
+            var parts = tankpath.split(/\./);
             if (parts.length == 3) {
-                let fluidType = (N2K_FLUID_TYPES[parts[1]])?N2K_FLUID_TYPES[parts[1]]:N2K_FLUID_TYPES['unavailable'];
+                let fluidType = (SIGNALK_FLUID_TYPES[parts[1]])?SIGNALK_FLUID_TYPES[parts[1]]:SIGNALK_FLUID_TYPES['unavailable'];
                 let instance = parts[2];
                 let capacity = null;
                 let tankService = null;
                 try {
                     tankService = new SignalkTankService(fluidType, instance);
                     createService(tankService);
-                    var stream = app.streambundle.getSelfStream(tank + ".currentLevel");
+                    var stream = app.streambundle.getSelfStream(tankpath + ".currentLevel");
                     if (stream) {
                         unsubscribes.push(stream.onValue(currentLevel => {
-                            if (!capacity) capacity = app.getSelfPath(tank + ".capacity.value");
+                            if (!capacity) capacity = app.getSelfPath(tankpath + ".capacity.value");
                             tankService.update(currentLevel, capacity)
                         }));
                     }
                 } catch(e)  {
-                    log.E("unable to create service for %s (%s)", tank, e);
+                    log.E("unable to create service for %s (%s)", tankpath, e);
                 }
             } else {
-                log.E("invalid tank path (%s)", tank);
+                log.W("ignoring invalid tank path (%s)", tankpath);
             }
         });
     }
@@ -99,10 +103,6 @@ module.exports = function(app) {
     plugin.stop = function() {
         unsubscribes.forEach(f => f())
         unsubscribes = []
-    }
-
-    async function createService(tankService) {
-        await tankService.createService();
     }
 
     return(plugin);
