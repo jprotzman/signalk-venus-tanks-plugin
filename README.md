@@ -1,6 +1,6 @@
 # pdjr-skplugin-venus-tanks
 
-Inject Signal K tank data onto the host dbus.
+Inject Signal K tank data onto the host system dbus.
 
 __pdjr-skplugin-venus-tanks__ is a plugin for Signal K servers running
 on Venus OS.
