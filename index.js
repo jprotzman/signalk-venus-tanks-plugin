@@ -43,11 +43,15 @@ module.exports = function(app) {
     plugin.schema = {
         "type": "object",
         "properties": {
-            "tankpaths": {
+            "tanks": {
                 "type": "array",
-                "title": "Export these tank paths to host dbus",
+                "title": "Tank configuration",
                 "items": {
-                    "type": "string"
+                    "type": "object",
+                    "properties": {
+                        "path": { "type": "string", "title": "Tank path" },
+                        "factor": { "type": "number", "title": "Capacity factor", "min": 0, "default": 1.0 }
+                    }
                 },
                 "default": [ ]
             }
@@ -59,35 +63,35 @@ module.exports = function(app) {
     plugin.start = function(options) {
         // If no tank paths are specified, then recover all available
         // paths from the server.
-        if ((!options.tankpaths) || (options.tankpaths.length == 0)) {
+        if ((!options.tanks) || (options.tanks.length == 0)) {
             var tankpathset = app.streambundle.getAvailablePaths().filter(path => path.startsWith('tanks.')).reduce((a,p) => {
                 var matches;
                 if (matches = p.match(/^(tanks\..*\..*)\..*/)) a.add(matches[1]);
                 return(a);
             }, new Set());
-            options.tankpaths = Array.from(tankpathset);
+            options.tanks = Array.from(tankpathset).map(p => ({ "path": p, "factor": 1.0 }));
         }
 
-        log.N("creating dbus services for %d tanks", options.tankpaths.length);
+        log.N("creating dbus services for %d tanks", options.tanks.length);
 
         // Iterate over recovered paths, asynchronously creating dbus
         // tank services (see SignalkTankService()) and registering
         // for level updates which are used to update the associated
         // service as and when they occur. 
-        options.tankpaths.forEach(tankpath => {
-            var parts = tankpath.split(/\./);
+        options.tanks.forEach(tank => {
+            var parts = tank.path.split(/\./);
             if (parts.length == 3) {
                 let fluidType = (SIGNALK_FLUID_TYPES[parts[1]])?SIGNALK_FLUID_TYPES[parts[1]]:SIGNALK_FLUID_TYPES['unavailable'];
                 let instance = parts[2];
                 let capacity = null;
                 let tankService = null;
                 try {
-                    tankService = new SignalkTankService(fluidType, instance);
+                    tankService = new SignalkTankService(fluidType, instance, tank.factor);
                     tankService.createService();
-                    var stream = app.streambundle.getSelfStream(tankpath + ".currentLevel");
+                    var stream = app.streambundle.getSelfStream(tank.path + ".currentLevel");
                     if (stream) {
                         unsubscribes.push(stream.onValue(currentLevel => {
-                            if (!capacity) capacity = app.getSelfPath(tankpath + ".capacity.value");
+                            if (!capacity) capacity = app.getSelfPath(tank.path + ".capacity.value");
                             tankService.update(currentLevel, capacity)
                         }));
                     }

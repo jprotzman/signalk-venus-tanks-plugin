@@ -49,26 +49,38 @@ Once installed the plugin will start immediately.
 By default __pdjr-skplugin-venus-tanks__ will create and update a dbus
 service for every tank reported in Signal K.
 
-If you want the plugin to support just specific tanks, then you must
-configure it by explicitly specifying the Signal K tank paths that it
-should process.
+If you want the plugin to support just specific tanks or you need to
+adjust the tank capacity value reported by Signal K for one or more
+tanks then you must configure each tank explicitly in the following
+way.
 
 __pdjr-skplugin-venus-tanks__ is configured through the Signal K plugin
 configuration interface.
 Navigate to _Server->Plugin config_ and select the _Venus tanks_ tab.
 
-The plugin configuration page consists simply of a list of Signal K
-tank paths.
-Initially this list is empty: a condition which the plugin treats as
+The plugin configuration page consists of a list of Signal K tank
+specifications, each consisting of a *path* to a particular tank in the
+Signal K tree and an associated (multiplication) *factor* which can be
+used to adjust the capacity value reported by Signal K.
+This latter value feature is useful because individual tank sensor
+monitors are sometimes configured differently or report in non-standard
+ways: returning litres or sometimes cubic metres as the tank capacity.
+Venus OS expects tank capacity to be reported in litres.
+The factor value defaults to 1.0.
+
+The tank list is initially empty: a condition which the plugin treats as
 an invitation to create and maintain dbus services for all tank paths
-reported in Signal K.
+reported in Signal K using a capacity factor of 1.0.
+
 If the list is not empty, then only those tanks identified in the list
 will be processed.
-Each list entry must consist of a Signal K tank path of the form
-'tanks.*fluid-type*__.__*tank-instance*'.
+Each tank *path* entry must consist of a Signal K tank path of the form
+'tanks.*fluid-type*__.__*tank-instance*' and *factor* must be a decimal
+value greater than or equal to 0.0.
 
 You may need to restart Signal K after making any configuration
 changes.
+
 The plugin will indicate its status in the Signal K dashboard.
 
 Once the plugin is installed, configured and working you can log into
@@ -109,7 +121,11 @@ Mgmt/ProcessVersion                                         1.0 on Python 2.7.14
 ProductId                                                                      0
 ProductName                                               SignalK tank interface
 Remaining                                                                1.60218
-```
+`
+
+You can see that my port-side fuel tank is reporting capacity in
+cubic-metres: I should really adjust this to litres by setting a
+multiplication factor for this tank of 1000.0.
 
 ### Updating the Venus GUI for multiple tank display
 

@@ -32,9 +32,10 @@ module.exports = class SignalkTankService {
      * fluidtype and tankinstance, a subsequent call to createService()
      * is required to do that.
      */
-    constructor(fluidtype, tankinstance) {
+    constructor(fluidtype, tankinstance, factor=1.0) {
         this.fluidtype = fluidtype;
         this.tankinstance = tankinstance;
+        this.factor = factor;
         this.tankcapacity = 0.0;
         this.servicename = "com.victronenergy.tank.signalk_tank_" + this.fluidtype + "_" + this.tankinstance;
         this.interfacename = this.servicename;
@@ -105,8 +106,8 @@ module.exports = class SignalkTankService {
     update(currentlevel, capacity=null) {
         if ((this.bus) && (this.iface)) {
             if (capacity) {
-                this.tankcapacity = capacity;
-                this.iface['/Capacity'] = capacity;
+                this.tankcapacity = (capacity * this.factor);
+                this.iface['/Capacity'] = this.tankcapacity;
             }
             if (this.tankcapacity) {
                 this.iface['/Remaining'] = (this.tankcapacity * currentlevel);
