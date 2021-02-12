@@ -83,7 +83,7 @@ module.exports = function(app) {
                 let tankService = null;
                 try {
                     tankService = new SignalkTankService(fluidType, instance);
-                    createService(tankService);
+                    tankService.createService();
                     var stream = app.streambundle.getSelfStream(tankpath + ".currentLevel");
                     if (stream) {
                         unsubscribes.push(stream.onValue(currentLevel => {
