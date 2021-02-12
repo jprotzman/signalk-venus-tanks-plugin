@@ -81,7 +81,7 @@ module.exports = function(app) {
         options.tanks.forEach(tank => {
             var parts = tank.path.split(/\./);
             if (parts.length == 3) {
-                let fluidType = (SIGNALK_FLUID_TYPES[parts[1]])?SIGNALK_FLUID_TYPES[parts[1]]:SIGNALK_FLUID_TYPES['unavailable'];
+                let fluidType = (SIGNALK_FLUID_TYPES.hasOwnProperty(parts[1]))?SIGNALK_FLUID_TYPES[parts[1]]:SIGNALK_FLUID_TYPES['unavailable'];
                 let instance = parts[2];
                 let capacity = null;
                 let tankService = null;
