@@ -14,6 +14,7 @@
  * permissions and limitations under the License.
  */
 
+const fs = require('fs');
 const Log = require('./lib/signalk-liblog/Log.js');
 const SignalkTankService = require('./SignalkTankService');
 
