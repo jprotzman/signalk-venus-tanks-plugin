@@ -71,7 +71,9 @@ operation in Signal K.
 ## Configuration
 
 1. Login to your Signal K dashboard and navigate to
-   _Server->Plugin config_->_Venus tanks_.
+   _Server->Plugin Config_->_Venus tanks_ and select the _Configure_
+   to open the configuration panel and reveal the following options.
+
 
 2. OPTION: "Use GUI enhancements?"
 
@@ -91,7 +93,7 @@ operation in Signal K.
    
 3. OPTION: "Tanks"
 
-   This array option is empty be default, telling __pdjr-skplugin-venus-tanks__
+   This array option is empty by default, telling __pdjr-skplugin-venus-tanks__
    to create a D-Bus service for every tank reported in Signal K.
 
    If you want the plugin to support just specific tanks or you need to
@@ -111,13 +113,14 @@ operation in Signal K.
    returning volume in litres, others in cubic-metres.
    Venus OS expects tank capacity to be reported in litres.
    
-4. When you have made any changes you require, 
-specified all the tanks you wish the plugin to process,
-   update the configuration.
+4. When you have made any changes you require, click _Submit_ to save
+   your choices and start the plugin.
    
-4. Reboot Signal K.
-
-You can revert to processing all tanks by restoring the tank list to empty.
+5. Login to your Venus host and restart the GUI:
+   ```
+   $> svc -d /service/gui
+   $> svc -u /service/gui
+   ```
 
 ## Reviewing operation in Venus OS
 
@@ -163,31 +166,8 @@ Remaining                                                                1.60218
 ```
 
 You can see that my port-side fuel tank is reporting capacity in
-cubic-metres: I should really adjust this to litres by setting a
-multiplication *factor* of 1000.0 for this tank.
-
-### Updating the Venus GUI for multiple tank display
-
-If you have more than one or two tanks on your system, then you may
-wish to make some changes to the Venus GUI in order to better 
-display this data.
-
-On my system I use the GUI tweaks implemented by @kwindrem in his
-[tank repeater](https://github.com/kwindrem/SeeLevel-N2K-Victron-VenusOS)
-project.
-You can get these changes by clicking the above link and following
-the installation instructions bearing in mind that:
-   
-1. When you run the repeater project setup script, respond to the
-   first prompt with 'a' (Activate) and subsequent prompts with 'y'.
-   This will activate @kwindrem's repeater (we don't need this) and
-   install his GUI changes (we do need these).
-   
-2. You should then run the repeater project setup script again,
-   responding to the first prompt with 'd' (Disable) and subsequent
-   prompts with 'y'.
-   This will disable @kwindrem's repeater, but leave his GUI changes
-   in place.
+cubic-metres: I should really adjust this to litres in some way,
+maybe by setting a multiplication *factor* of 1000.0 for this tank.
 
 ## Acknowledgements
 
