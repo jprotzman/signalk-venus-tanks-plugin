@@ -128,6 +128,7 @@ module.exports = function(app) {
         unsubscribes = []
     }
 
+    /***************8********************
     function configureGUI(yesno) {
         if (fs.existsSync(VENUS_GUI_FOLDER)) {
             if (yesno) {
