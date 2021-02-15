@@ -1,18 +1,18 @@
 # pdjr-skplugin-venus-tanks
 
-Inject Signal K tank data onto the host system D-Bus.
+This plugin should only be used on Signal K servers running on Venus OS.
 
-__pdjr-skplugin-venus-tanks__ is a plugin for Signal K servers running
-on Venus OS.
+__pdjr-skplugin-venus-tanks__ represents Signal K tanks as D-Bus
+services, injecting tank data from Signal K into Venus OS and 
+enabling its display on the Venus GUI.
 
-The plugin was designed as a work-around for Venus' broken handling of
-CAN-connected multi-channel tank monitoring devices (like the Maretron
-FPM100 and the Garnet SeeLevel), but, it will, of course, operate with
-Signal K tank data from any source.
+This is useful because it provides a work-around for Venus' broken
+native support for CAN connected multi-channel tank sensor devices
+like the Maretron FPM100 and the Garnet SeeLevel.
 
-__pdjr-skplugin-venus-tanks__ creates a D-Bus service for user-selected
-Signal K tanks and echoes tank updates to the associated service, making
-the tank data available for *inter-alia* rendering in the Venus GUI.
+Although designed to address Venus' problem with multi-channel tank
+sensors, the project will, of course, inject any Signal K tank data
+into Venus and so make it available to devices like the CCGX.
 
 The plugin borrows GUI enhancements from Kevin Windrem's
 [tank repeater](https://github.com/kwindrem/SeeLevel-N2K-Victron-VenusOS)
@@ -48,8 +48,7 @@ above) for a solution that doesn't involve Signal K).
 
 ## System requirements
 
-__pdjr-skplugin-venus-tanks__ will most likely only be useful in
-Signal K servers running under Venus OS.
+A host system running Venus OS.
 
 If you require similar functionality but do not run Signal K under
 Venus or you prefer to maintain D-Bus tank data with a native Venus
@@ -131,20 +130,22 @@ On my five-tank system, for example:
 ```
 $> dbus-spy
 Services
-com.victronenergy.battery.ttyO2                                          BMV-700
+com.victronenergy.battery.ttyO2                              BMV-700
 com.victronenergy.fronius
 com.victronenergy.logger
 com.victronenergy.modbustcp
 com.victronenergy.qwacs
 com.victronenergy.settings
 com.victronenergy.system
-com.victronenergy.tank.signalk_tank_0_3                   SignalK tank interface
-com.victronenergy.tank.signalk_tank_0_4                   SignalK tank interface
-com.victronenergy.tank.signalk_tank_1_1                   SignalK tank interface
-com.victronenergy.tank.signalk_tank_1_2                   SignalK tank interface
-com.victronenergy.tank.signalk_tank_5_0                   SignalK tank interface
-com.victronenergy.vebus.ttyO1                          Quattro 24/8000/200-2x100
+com.victronenergy.tank.signalk_192_168_1_2_3000_0_3          SignalK tank interface
+com.victronenergy.tank.signalk_192_168_1_2_3000_0_4          SignalK tank interface
+com.victronenergy.tank.signalk_192_168_1_2_3000_1_1          SignalK tank interface
+com.victronenergy.tank.signalk_192_168_1_2_3000_1_2          SignalK tank interface
+com.victronenergy.tank.signalk_192_168_1_2_3000_5_0          SignalK tank interface
+com.victronenergy.tank.socketcan_can0_vi0_uc1640899          Tank sensor
+com.victronenergy.vebus.ttyO1                                Quattro 24/8000/200-2x100
 com.victronenergy.vecan.can0
+
 ```
 If you choose one of the tank services you will be able to see tank
 data updates as they occur. For example.
