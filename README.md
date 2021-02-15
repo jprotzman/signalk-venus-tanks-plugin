@@ -21,6 +21,31 @@ Of course, you can also roll your own GUI for tank data rendering.
 
 ![CCGX tank display](venus.png)
 
+## Background
+
+Support for tank monitoring in Venus OS is fundamentally broken.
+The OS code implementing 'socketcan' services assumes one tank sensor
+device per physical tank and generates a single D-Bus tank service for
+each sensor device based on this false understanding.
+
+Consequently, a tank service in Venus that represesents a multi-channel
+tank sensor device is chaotically updated with data from all the tank
+sensors that are connected to the multi-channel device resulting in a
+GUI rendering of the data that is unintelligible.
+
+Somewhere in this broken-ness Venus discards tank sensor instance
+numbers making disaggregation of the garbled composite data at best
+problematic and, for non-trivial tank installations, infeasible.
+
+Even so, there have been a number of attempts at implementing fixes
+and work-arounds based on the timing of fluid type and tank level
+data updates but this does not allow disambiguation in installations
+which have more than one tank of a particular fluid type.
+
+If you have a multi-channel tank sensor on CAN and you have only one
+tank of each fluid type, then look at Kevin Windrem's project (see
+above) for a solution that doesn't involve Signal K).
+
 ## System requirements
 
 __pdjr-skplugin-venus-tanks__ will most likely only be useful in
@@ -31,7 +56,6 @@ Venus or you prefer to maintain D-Bus tank data with a native Venus
 process, then consider using this
 [alternative Python application](https://github.com/preeve9534/venus-signalk-tank-service).
 
-
 ## Installation
 
 Download and install __pdjr-skplugin-venus-tanks__ using the _Appstore_
@@ -41,24 +65,40 @@ The plugin can also be obtained from the
 and installed using
 [these instructions](https://github.com/SignalK/signalk-server-node/blob/master/SERVERPLUGINS.md).
 
-Once installed the plugin will start immediately and report its status
-in the Signal K dashboard.
+Once installed, you should must configure the plugin and enable its
+operation in Signal K.
 
 ## Configuration
-
-By default __pdjr-skplugin-venus-tanks__ will create and update a dbus
-service for every tank reported in Signal K.
-
-If you want the plugin to support just specific tanks or you need to
-adjust the tank capacity value reported by Signal K for one or more
-tanks then you must configure each tank explicitly in the following
-way.
 
 1. Login to your Signal K dashboard and navigate to
    _Server->Plugin config_->_Venus tanks_.
 
-2. Add entries to the *Tanks* list, one for each tank you want the plugin
-   to process.
+2. OPTION: "Use GUI enhancements?"
+
+   This option is checked by default and tells the plugin that it should
+   use this projects versions of ```OverviewMobile.qml``` and
+   ```TileTank.qml``` rather than the system default versions.
+   
+   To achieve this the plugin will backup the existing versions of these
+   files and install its enhanced versions in their place.
+   The GUI changes implemented by the two ```.qml``` files prevent the
+   native display of CAN derived tank data and adjust the 'mobile' display
+   page to better accommodate the display of multiple tank entries.
+   
+   Unchecking this option will prevent the use of the plugin's enhanced
+   GUI, if necessary reverting any system changes that may have been made
+   previously by restoring the backed up ```.qml``` files.
+   
+3. OPTION: "Tanks"
+
+   This array option is empty be default, telling __pdjr-skplugin-venus-tanks__
+   to create a D-Bus service for every tank reported in Signal K.
+
+   If you want the plugin to support just specific tanks or you need to
+   adjust the tank capacity value reported by Signal K for one or more
+   tanks then you must configure each tank explicitly by adding entries
+   to the *Tanks* list, one for each tank you want the plugin to process.
+   
    Each tank entry consists of *path* and *factor* settings.
 
    *path* specifies the Signal K tank path of the tank being configured
@@ -71,13 +111,13 @@ way.
    returning volume in litres, others in cubic-metres.
    Venus OS expects tank capacity to be reported in litres.
    
-3. When you specified all the tanks you wish the plugin to process,
+4. When you have made any changes you require, 
+specified all the tanks you wish the plugin to process,
    update the configuration.
    
 4. Reboot Signal K.
 
-You can revert to the default of processing all tanks by restoring the
-tank list to empty.
+You can revert to processing all tanks by restoring the tank list to empty.
 
 ## Reviewing operation in Venus OS
 
