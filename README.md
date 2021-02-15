@@ -1,22 +1,20 @@
 # pdjr-skplugin-venus-tanks
 
-Inject Signal K tank data onto the host system dbus.
+Inject Signal K tank data onto the host system D-Bus.
 
 __pdjr-skplugin-venus-tanks__ is a plugin for Signal K servers running
 on Venus OS.
 
 The plugin was designed as a work-around for Venus' broken handling of
-multi-channel tank monitoring devices (like the Maretron FPM100 and
-the Garnet SeeLevel), but, it will, of course, operate with Signal K
-tank data from any source.
+CAN-connected multi-channel tank monitoring devices (like the Maretron
+FPM100 and the Garnet SeeLevel), but, it will, of course, operate with
+Signal K tank data from any source.
 
-__pdjr-skplugin-venus-tanks__ creates a dbus service for each, user
-nominated, Signal K tank and echoes Signal K tank updates to the
-associated dbus service, making the tank data available for *inter-alia*
-rendering in the Venus GUI.
+__pdjr-skplugin-venus-tanks__ creates a D-Bus service for user-selected
+Signal K tanks and echoes tank updates to the associated service, making
+the tank data available for *inter-alia* rendering in the Venus GUI.
 
-The installation instructions below include guidance on how to use
-the GUI modifications implemented by @kwindrem in his
+The plugin borrows GUI enhancements from Kevin Windrem's
 [tank repeater](https://github.com/kwindrem/SeeLevel-N2K-Victron-VenusOS)
 project to achieve the display shown below.
 Of course, you can also roll your own GUI for tank data rendering.
@@ -29,9 +27,10 @@ __pdjr-skplugin-venus-tanks__ will most likely only be useful in
 Signal K servers running under Venus OS.
 
 If you require similar functionality but do not run Signal K under
-Venus or you prefer to maintain dbus tank data with a native Venus
+Venus or you prefer to maintain D-Bus tank data with a native Venus
 process, then consider using this
 [alternative Python application](https://github.com/preeve9534/venus-signalk-tank-service).
+
 
 ## Installation
 
