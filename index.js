@@ -30,6 +30,10 @@ const SIGNALK_FLUID_TYPES = {
     unavailable: 15
 };
 
+const VENUS_GUI_FOLDER = "/opt/victronenergy/gui/qml/";
+const MY_GUI_FOLDER = __data__ + "/gui/";
+const GUI_FILES = [ "OverviewMobile.qml", "TileTank.qml" ];
+
 module.exports = function(app) {
     var plugin = {};
     var unsubscribes = [];
@@ -43,9 +47,14 @@ module.exports = function(app) {
     plugin.schema = {
         "type": "object",
         "properties": {
+            "usegui": {
+                "type": "boolean",
+                "title": "Use GUI enhancements?",
+                "default": true
+            },
             "tanks": {
                 "type": "array",
-                "title": "Tank configuration",
+                "title": "Tank configurations",
                 "items": {
                     "type": "object",
                     "properties": {
@@ -61,6 +70,15 @@ module.exports = function(app) {
     plugin.uiSchema = { }
 
     plugin.start = function(options) {
+        
+        if ((options) && (options.hasProperty('usegui')) {
+            try {
+                congigureGUI(usegui);
+            } catch(e) {
+                log.E("error configuring GUI: %s", e);
+            }
+        }
+        
         // If no tank paths are specified, then recover all available
         // paths from the server.
         if ((!options.tanks) || (options.tanks.length == 0)) {
@@ -107,6 +125,27 @@ module.exports = function(app) {
     plugin.stop = function() {
         unsubscribes.forEach(f => f())
         unsubscribes = []
+    }
+
+    function configureGUI(yesno) {
+        if (fs.existsSync(VENUS_GUI_FOLDER)) {
+            if (yesno) {
+                GUI_FILES.forEach(file => {
+                    if (!fs.existsSync(VENUS_GUI_FOLDER + file + ".orig")) {
+                        fs.renameSync(VENUS_GUI_FOLDER + file, VENUS_GUI_FOLDER + file + ".orig");
+                    }
+                    fs.copyFileSync(MY_GUI_FOLDER + file, VENUS_GUI_FOLDER + file);
+                });
+            } else {
+                GUI_FILES.forEach(file => {
+                    if (fs.existsSync(VENUS_GUI_FOLDER + file + ".orig")) {
+                        fs.renameSync(VENUS_GUI_FOLDER + file + ".orig", VENUS_GUI_FOLDER + file);
+                    }
+                }
+            }
+        } else {
+            throw "Venus GUI folder not found - are you running on Venus OS?"
+        }
     }
 
     return(plugin);
