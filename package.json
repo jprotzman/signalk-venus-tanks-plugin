@@ -1,7 +1,7 @@
 {
   "name": "pdjr-skplugin-venus-tanks",
   "version": "1.0.0",
-  "description": "Inject Signal K tank data onto the host dbus",
+  "description": "Inject Signal K tank updates into Venus OS",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
