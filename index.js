@@ -40,8 +40,8 @@ module.exports = function(app) {
     var unsubscribes = [];
 
     plugin.id = PLUGIN_ID;
-    plugin.name = "Venus tank ";
-    plugin.description = "Inject Signal K tank data onto host dbus";
+    plugin.name = "Venus tanks";
+    plugin.description = "Inject Signal K tank updates into Venus OS";
 
     const log = new Log(plugin.id, { ncallback: app.setPluginStatus, ecallback: app.setPluginError });
 
@@ -50,8 +50,7 @@ module.exports = function(app) {
         "properties": {
             "usegui": {
                 "type": "boolean",
-                "title": "Use GUI enhancements?",
-                "default": true
+                "title": "Use GUI enhancements?"
             },
             "tanks": {
                 "type": "array",
@@ -63,64 +62,70 @@ module.exports = function(app) {
                         "factor": { "type": "number", "title": "Capacity factor", "min": 0, "default": 1.0 }
                     }
                 },
-                "default": [ ]
             }
-        }
+        },
+        "default": { "usegui": true, "tanks": [] }
     }
 
     plugin.uiSchema = { }
 
     plugin.start = function(options) {
+        if (options) { 
         
-        if ((options) && (options.hasProperty('usegui')) {
-            try {
-                congigureGUI(usegui);
-            } catch(e) {
-                log.E("error configuring GUI: %s", e);
-            }
-        }
-        
-        // If no tank paths are specified, then recover all available
-        // paths from the server.
-        if ((!options.tanks) || (options.tanks.length == 0)) {
-            var tankpathset = app.streambundle.getAvailablePaths().filter(path => path.startsWith('tanks.')).reduce((a,p) => {
-                var matches;
-                if (matches = p.match(/^(tanks\..*\..*)\..*/)) a.add(matches[1]);
-                return(a);
-            }, new Set());
-            options.tanks = Array.from(tankpathset).map(p => ({ "path": p, "factor": 1.0 }));
-        }
-
-        log.N("creating dbus services for %d tanks", options.tanks.length);
-
-        // Iterate over recovered paths, asynchronously creating dbus
-        // tank services (see SignalkTankService()) and registering
-        // for level updates which are used to update the associated
-        // service as and when they occur. 
-        options.tanks.forEach(tank => {
-            var parts = tank.path.split(/\./);
-            if (parts.length == 3) {
-                let fluidType = (SIGNALK_FLUID_TYPES.hasOwnProperty(parts[1]))?SIGNALK_FLUID_TYPES[parts[1]]:SIGNALK_FLUID_TYPES['unavailable'];
-                let instance = parts[2];
-                let capacity = null;
-                let tankService = null;
+            // Begin by making sure that our GUI interface is in thes
+            // state requested by 'options.usegui'.
+            //
+            if (options.hasProperty('usegui') {
                 try {
-                    tankService = new SignalkTankService(fluidType, instance, tank.factor);
-                    tankService.createService();
-                    var stream = app.streambundle.getSelfStream(tank.path + ".currentLevel");
-                    if (stream) {
-                        unsubscribes.push(stream.onValue(currentLevel => {
-                            if (!capacity) capacity = app.getSelfPath(tank.path + ".capacity.value");
-                            tankService.update(currentLevel, capacity)
-                        }));
-                    }
-                } catch(e)  {
-                    log.E("unable to create service for %s (%s)", tankpath, e);
+                    congigureGUI(usegui);
+                } catch(e) {
+                    log.E("error configuring GUI: %s", e);
                 }
-            } else {
-                log.W("ignoring invalid tank path (%s)", tankpath);
             }
-        });
+        
+            // If options.tanks is empty, then map available tank paths
+            // into entries in options.tanks.
+            //
+            if (options.tanks.length == 0) {
+                var tankpathset = app.streambundle.getAvailablePaths().filter(path => path.startsWith('tanks.')).reduce((a,p) => {
+                    var matches;
+                    if (matches = p.match(/^(tanks\..*\..*)\..*/)) a.add(matches[1]);
+                    return(a);
+                }, new Set());
+                options.tanks = Array.from(tankpathset).map(p => ({ "path": p, "factor": 1.0 }));
+            }
+
+            log.N("creating D-Bus services for %d tanks", options.tanks.length);
+
+            // Iterate over options.tanks, creating a SignalkTankService()
+            // instance for each tank entry and then register for updates
+            // on the associated tank paths.
+            //
+            options.tanks.forEach(tank => {
+                var parts = tank.path.split(/\./);
+                if (parts.length == 3) {
+                    let fluidType = (SIGNALK_FLUID_TYPES.hasOwnProperty(parts[1]))?SIGNALK_FLUID_TYPES[parts[1]]:SIGNALK_FLUID_TYPES['unavailable'];
+                    let instance = parts[2];
+                    let capacity = null;
+                    let tankService = null;
+                    try {
+                        tankService = new SignalkTankService(fluidType, instance, tank.factor);
+                        tankService.createService();
+                        var stream = app.streambundle.getSelfStream(tank.path + ".currentLevel");
+                        if (stream) {
+                            unsubscribes.push(stream.onValue(currentLevel => {
+                                if (!capacity) capacity = app.getSelfPath(tank.path + ".capacity.value");
+                                tankService.update(currentLevel, capacity)
+                            }));
+                        }
+                    } catch(e)  {
+                        log.E("unable to create service for %s (%s)", tankpath, e);
+                    }
+                } else {
+                    log.W("ignoring invalid tank path (%s)", tankpath);
+                }
+            });
+        }
     }
 
     plugin.stop = function() {
@@ -128,7 +133,13 @@ module.exports = function(app) {
         unsubscribes = []
     }
 
-    /***************8********************
+    /******************************************************************
+     * If yesno, then backup the extant system GUI files and copy our
+     * versions of GUI_FILES into VENUS_GUI_FOLDER if they aren't there
+     * already. Otherwise replace them with any previously made
+     * backups.
+     */
+
     function configureGUI(yesno) {
         if (fs.existsSync(VENUS_GUI_FOLDER)) {
             if (yesno) {
@@ -143,7 +154,7 @@ module.exports = function(app) {
                     if (fs.existsSync(VENUS_GUI_FOLDER + file + ".orig")) {
                         fs.renameSync(VENUS_GUI_FOLDER + file + ".orig", VENUS_GUI_FOLDER + file);
                     }
-                }
+                });
             }
         } else {
             throw "Venus GUI folder not found - are you running on Venus OS?"
