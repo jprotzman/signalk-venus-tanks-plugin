@@ -51,7 +51,7 @@ above) for a solution that doesn't involve Signal K).
 A Venus OS based host system running Signal K and configured to
 display Venus' 'boat and motorhome overview'.
 
-You can enable and disable 'boat & motorhome overview' bys
+You can enable and disable 'boat & motorhome overview' by
 navigating to
 *MENU -> Settings -> Display & language -> Show baot & motorhome view*
 on your Venus OS GUI.
@@ -75,10 +75,10 @@ and installed using
 __pdjr-skplugin-venus-tanks__ does not *require* configuration: all that
 is necessary after installation is a restart of your Signal K server.
 
-By default the plugin will safely install enable some GUI enhancements
-on your Venus host and create D-Bus tank services for every tank
-reported within Signal K.
-If you need to change this behaviour, then:
+By default the plugin will enable some tweaks to the 'boat & motorhome'
+view of your Venus host's GUI and create D-Bus tank services for every
+tank reported within Signal K.
+If you need to change either of these behaviours, then:
 
 1. Login to your Signal K dashboard and navigate to
    _Server->Plugin Config_->_Venus tanks interface_ and select the
