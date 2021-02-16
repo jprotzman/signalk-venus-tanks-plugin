@@ -44,7 +44,7 @@ which have more than one tank of a particular fluid type.
 
 If you have a multi-channel tank sensor on CAN and you have only one
 tank of each fluid type, then look at Kevin Windrem's project (see
-above) for a solution that doesn't involve Signal K).
+above) for a solution that doesn't involve Signal K.
 
 ## System requirements
 
