@@ -144,7 +144,9 @@ module.exports = function(app) {
             if (yesno) {
                 GUI_FILES.forEach(file => {
                     if (!fs.existsSync(VENUS_GUI_FOLDER + file + ".orig")) {
-                        fs.renameSync(VENUS_GUI_FOLDER + file, VENUS_GUI_FOLDER + file + ".orig");
+                        if (fs.existsSync(VENUS_GUI_FOLDER + file)) {
+                            fs.renameSync(VENUS_GUI_FOLDER + file, VENUS_GUI_FOLDER + file + ".orig");
+                        }
                     }
                     fs.copyFileSync(MY_GUI_FOLDER + file, VENUS_GUI_FOLDER + file);
                 });
