@@ -1,6 +1,6 @@
 # pdjr-skplugin-venus-tanks
 
-This plugin should only be used on Signal K servers running on Venus OS.
+This plugin is intended for Signal K servers running on Venus OS.
 
 __pdjr-skplugin-venus-tanks__ represents Signal K tanks as D-Bus
 services, injecting tank data from Signal K into Venus OS and 
