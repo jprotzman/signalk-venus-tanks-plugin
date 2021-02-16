@@ -53,7 +53,7 @@ display Venus' 'boat and motorhome overview'.
 
 You can enable and disable 'boat & motorhome overview' by
 navigating to
-*MENU -> Settings -> Display & language -> Show baot & motorhome overview*
+*MENU -> Settings -> Display & language -> Show boat & motorhome overview*
 on your Venus OS GUI.
 
 If you require similar functionality but do not run Signal K under
