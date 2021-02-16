@@ -77,7 +77,7 @@ module.exports = class SignalkTankService {
                         }
                     };
                     this.iface = {
-                        '/Mgmt/ProcessName': 'Signal K',
+                        '/Mgmt/ProcessName': 'SignalkTankService.js',
                         '/Mgmt/ProcessVersion': 'Not defined',
                         '/Mgmt/Connection': 'Signal K plugin',
                         '/DeviceInstance': this.tankinstance,
