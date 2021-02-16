@@ -39,7 +39,7 @@ problematic and, for non-trivial tank installations, infeasible.
 
 Even so, there have been a number of attempts at implementing fixes
 and work-arounds based on the timing of fluid type and tank level
-data updates but this does not allow disambiguation in installations
+data updates but these do not allow disambiguation in installations
 which have more than one tank of a particular fluid type.
 
 If you have a multi-channel tank sensor on CAN and you have only one
@@ -48,7 +48,13 @@ above) for a solution that doesn't involve Signal K).
 
 ## System requirements
 
-A host system running Venus OS.
+A Venus OS based host system running Signal K and configured to
+display Venus' 'boat and motorhome overview'.
+
+You can enable and disable 'boat & motorhome overview' bys
+navigating to
+*MENU -> Settings -> Display & language -> Show baot & motorhome view*
+on your Venus OS GUI.
 
 If you require similar functionality but do not run Signal K under
 Venus or you prefer to maintain D-Bus tank data with a native Venus
@@ -64,21 +70,28 @@ The plugin can also be obtained from the
 and installed using
 [these instructions](https://github.com/SignalK/signalk-server-node/blob/master/SERVERPLUGINS.md).
 
-Once installed, you should must configure the plugin and enable its
-operation in Signal K.
-
 ## Configuration
 
+__pdjr-skplugin-venus-tanks__ does not *require* configuration: all that
+is necessary after installation is a restart of your Signal K server.
+
+By default the plugin will safely install enable some GUI enhancements
+on your Venus host and create D-Bus tank services for every tank
+reported within Signal K.
+If you need to change this behaviour, then:
+
 1. Login to your Signal K dashboard and navigate to
-   _Server->Plugin Config_->_Venus tanks_ and select the _Configure_
-   to open the configuration panel and reveal the following options.
+   _Server->Plugin Config_->_Venus tanks interface_ and select the
+   _Configure_ button to open the configuration panel and reveal the
+   following options.
 
 
 2. OPTION: "Use GUI enhancements?"
 
    This option is checked by default and tells the plugin that it should
-   use this projects versions of ```OverviewMobile.qml``` and
-   ```TileTank.qml``` rather than the system default versions.
+   use this project's versions of ```OverviewMobile.qml``` and
+   ```TileTank.qml``` rather than the system's currently installed
+   versions.
    
    To achieve this the plugin will backup the existing versions of these
    files and install its enhanced versions in their place.
@@ -115,7 +128,7 @@ operation in Signal K.
 4. When you have made any changes you require, click _Submit_ to save
    your choices and start the plugin.
    
-5. Login to your Venus host and restart the GUI:
+5. Reboot your Venus host or login and restart the GUI:
    ```
    $> svc -d /service/gui
    $> svc -u /service/gui
@@ -150,24 +163,24 @@ com.victronenergy.vecan.can0
 If you choose one of the tank services you will be able to see tank
 data updates as they occur. For example.
 ```
-com.victronenergy.tank.signalk_tank_0_3
-Capacity                                                                  1.7981
-Connected                                                                      1
-DeviceInstance                                                                 3
-FirmwareVersion                                                                0
-FluidType                                                                      0
-HardwareVersion                                                                0
-Level                                                                     89.104
-Mgmt/Connection                                                   SignalK tank:3
-Mgmt/ProcessName     /data/venus-signalk-tank-service-main/signalktankservice.py
-Mgmt/ProcessVersion                                         1.0 on Python 2.7.14
-ProductId                                                                      0
-ProductName                                               SignalK tank interface
-Remaining                                                                1.60218
+com.victronenergy.tank.signalk_192_168_1_2_3000_0_3
+Capacity                                                                     1.7981
+Connected                                                                         1
+DeviceInstance                                                                    3
+FirmwareVersion                                                                   0
+FluidType                                                                         0
+HardwareVersion                                                                   0
+Level                                                                        89.104
+Mgmt/Connection                                                      SignalK tank:3
+Mgmt/ProcessName        /data/venus-signalk-tank-service-main/signalktankservice.py
+Mgmt/ProcessVersion                                            1.0 on Python 2.7.14
+ProductId                                                                         0
+ProductName                                                  SignalK tank interface
+Remaining                                                                   1.60218
 ```
 
 You can see that my port-side fuel tank is reporting capacity in
-cubic-metres: I should really adjust this to litres in some way,
+cubic-metres: I should really adjust this to litres in some way;
 maybe by setting a multiplication *factor* of 1000.0 for this tank.
 
 ## Acknowledgements

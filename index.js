@@ -40,7 +40,7 @@ module.exports = function(app) {
     var unsubscribes = [];
 
     plugin.id = PLUGIN_ID;
-    plugin.name = "Venus tanks";
+    plugin.name = "Venus tank interface";
     plugin.description = "Inject Signal K tank updates into Venus OS";
 
     const log = new Log(plugin.id, { ncallback: app.setPluginStatus, ecallback: app.setPluginError });
@@ -78,7 +78,7 @@ module.exports = function(app) {
         // requested by 'options.usegui'.
         //
         try {
-            congigureGUI(options.usegui);
+            configureGUI(options.usegui);
         } catch(e) {
             log.E("error configuring GUI (%s)", e);
         }
