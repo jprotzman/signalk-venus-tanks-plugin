@@ -172,7 +172,7 @@ FluidType                                                                       
 HardwareVersion                                                                   0
 Level                                                                        89.104
 Mgmt/Connection                                                      SignalK tank:3
-Mgmt/ProcessName        /data/venus-signalk-tank-service-main/signalktankservice.py
+Mgmt/ProcessName               /data/venus-signalk-tank-service-main/signalktank.py
 Mgmt/ProcessVersion                                            1.0 on Python 2.7.14
 ProductId                                                                         0
 ProductName                                                  SignalK tank interface
