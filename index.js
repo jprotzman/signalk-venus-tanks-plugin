@@ -18,6 +18,7 @@ const fs = require('fs');
 const SignalkTankService = require('./SignalkTankService');
 
 const PLUGIN_ID = "signalk-venus-tanks-plugin";
+
 const SIGNALK_FLUID_TYPES = {
     fuel: 0,
     freshWater: 1,
@@ -67,13 +68,15 @@ module.exports = function(app) {
     plugin.uiSchema = { }
 
     plugin.start = function(options) {
-        if (!options) options = {};
+        app.debug("Starting");
+		if (!options) options = {};
         if (!options.hasOwnProperty('usegui')) { options['usegui'] = false; app.debug("using default value (false) for options.usegui"); }
         if (!options.hasOwnProperty('tanks')) { options['tanks'] = []; app.debug("using default value ([]) for options.tanks"); }
         
         // Begin by making sure that our GUI interface is in the state
         // requested by 'options.usegui'.
         //
+		app.debug("Configuring UI");
         try {
             configureGUI(options.usegui);
         } catch(e) {
@@ -83,6 +86,7 @@ module.exports = function(app) {
         // If options.tanks is empty, then map available tank paths
         // into entries in options.tanks.
         //
+		app.debug("Processing tank list");
         if (options.tanks.length == 0) {
             var tankpathset = app.streambundle.getAvailablePaths().filter(path => path.startsWith('tanks.')).reduce((a,p) => {
                 var matches;
