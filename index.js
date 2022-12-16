@@ -15,17 +15,16 @@
  */
 
 const fs = require('fs');
-const Log = require('./lib/signalk-liblog/Log.js');
 const SignalkTankService = require('./SignalkTankService');
 
-const PLUGIN_ID = "pdjr-skplugin-venus-tanks";
+const PLUGIN_ID = "signalk-venus-tanks-plugin";
 const SIGNALK_FLUID_TYPES = {
     fuel: 0,
     freshWater: 1,
-    greyWater: 2,
+    wasteWater: 2,
     liveWell: 3,
     lubrication: 4,
-    wasteWater: 5,
+    blackWater: 5,
     gasoline: 6,
     error: 14,
     unavailable: 15
@@ -42,8 +41,6 @@ module.exports = function(app) {
     plugin.id = PLUGIN_ID;
     plugin.name = "Venus tank interface";
     plugin.description = "Inject Signal K tank updates into Venus OS";
-
-    const log = new Log(plugin.id, { ncallback: app.setPluginStatus, ecallback: app.setPluginError });
 
     plugin.schema = {
         "type": "object",
@@ -64,15 +61,15 @@ module.exports = function(app) {
                 },
             }
         },
-        "default": { "usegui": true, "tanks": [] }
+        "default": { "usegui": false, "tanks": [] }
     }
 
     plugin.uiSchema = { }
 
     plugin.start = function(options) {
         if (!options) options = {};
-        if (!options.hasOwnProperty('usegui')) { options['usegui'] = true; log.W("using default value (true) for options.usegui"); }
-        if (!options.hasOwnProperty('tanks')) { options['tanks'] = []; log.W("using default value ([]) for options.tanks"); }
+        if (!options.hasOwnProperty('usegui')) { options['usegui'] = false; app.debug("using default value (false) for options.usegui"); }
+        if (!options.hasOwnProperty('tanks')) { options['tanks'] = []; app.debug("using default value ([]) for options.tanks"); }
         
         // Begin by making sure that our GUI interface is in the state
         // requested by 'options.usegui'.
@@ -80,7 +77,7 @@ module.exports = function(app) {
         try {
             configureGUI(options.usegui);
         } catch(e) {
-            log.E("error configuring GUI (%s)", e);
+            app.error("error configuring GUI (%s)", e);
         }
         
         // If options.tanks is empty, then map available tank paths
@@ -95,7 +92,7 @@ module.exports = function(app) {
             options.tanks = Array.from(tankpathset).map(p => ({ "path": p, "factor": 1.0 }));
         }
 
-        log.N("creating D-Bus services for %d tanks", options.tanks.length);
+        app.debug("creating D-Bus services for %d tanks", options.tanks.length);
 
         // Iterate over options.tanks, creating a SignalkTankService()
         // instance for each tank entry and then register for updates
@@ -119,10 +116,10 @@ module.exports = function(app) {
                         }));
                     }
                 } catch(e)  {
-                    log.E("unable to create service for %s (%s)", tankpath, e);
+                    app.error("unable to create service for %s (%s)", tankpath, e);
                 }
             } else {
-                log.W("ignoring invalid tank path (%s)", tankpath);
+                app.debug("ignoring invalid tank path (%s)", tankpath);
             }
         });
     }
@@ -158,7 +155,7 @@ module.exports = function(app) {
                 });
             }
         } else {
-            throw "Venus GUI folder not found - are you running on Venus OS?"
+            app.error("Venus GUI folder not found - are you running on Venus OS?");
         }
     }
 
