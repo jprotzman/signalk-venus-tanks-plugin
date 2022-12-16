@@ -1,5 +1,5 @@
 {
-  "name": "pdjr-skplugin-venus-tanks",
+  "name": "signalk-venus-tanks-plugin",
   "version": "1.0.0",
   "description": "Inject Signal K tank updates into Venus OS",
   "scripts": {
@@ -7,7 +7,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/preeve9534/pdjr-skplugin-venus-tanks.git"
+    "url": "git+https://github.com/jprotzman/signalk-venus-tanks-plugin.git"
   },
   "keywords": [
     "signalk-node-server-plugin",
@@ -15,12 +15,12 @@
     "venus"
   ],
   "signalk-plugin-enabled-by-default": true,
-  "author": "Paul Reeve <preeve@pdjr.eu>",
+  "author": "Paul Reeve <preeve@pdjr.eu>, Modified by Jason Protzman",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/preeve9534/pdjr-skplugin-venus-tanks/issues"
+    "url": "https://github.com/jprotzman/signalk-venus-tanks-plugin/issues"
   },
-  "homepage": "https://github.com/preeve9534/pdjr-skplugin-venus-tanks#readme",
+  "homepage": "https://github.com/jprotzman/signalk-venus-tanks-plugin",
   "dependencies": {
     "dbus-native": "^0.4.0",
     "sprintf-js": "^1.1.2"
